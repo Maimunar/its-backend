@@ -9,7 +9,7 @@ The project uses a NodeJS Express API and a React Frontend and ressembles a band
 
 *********************************************************************************************************************
 
-## CONSOLE COMMANDS
+### CONSOLE COMMANDS
 
 The following commands are available in the package.json:
 
@@ -36,7 +36,7 @@ The server persists using a a mongoDB Database and the mongoose + mongodb packag
 
 *********************************************************************************************************************
 
-#### TESTING AND CODE QUALITY
+### TESTING AND CODE QUALITY
 
 This project uses EditorConfig to standardize text editor configuration.
 Visit http://editorconfig.org for details.
@@ -56,7 +56,7 @@ Additional Testing libraries that are used are proxyquire, sinon and sinon-chai
 
 *********************************************************************************************************************
 
-##### API
+### API
 
 This project uses Express for its API and Nodemon for its server
 

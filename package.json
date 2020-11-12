@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx nodemon --exec npx babel-node src/server.js",
     "coverage": "nyc --reporter=text --reporter=html mocha",
-    "test": "",
+    "test": "mocha",
     "eslint": "eslint"
   },
   "keywords": [],
