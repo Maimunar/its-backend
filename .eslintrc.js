@@ -7,7 +7,7 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: "eslint:recommended",
+  extends: "airbnb-base",
   rules: {
     "no-multiple-empty-lines": "warn",
     "no-var": "error",
