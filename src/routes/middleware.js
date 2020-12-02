@@ -9,14 +9,14 @@ const upload = multer({
 module.exports.upload = upload;
 
 module.exports.handlePicture = itemPictures => async (req, res, next) => {
-  try{
+  try {
     if (!req.file) return next();
     if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
       return next(new Error('File format is not supported'));
     }
     req.file.storedFilename = await itemPictures.store(req.file.buffer);
     return next();
-  } catch(err){
+  } catch (err) {
     return next(err);
   }
 
