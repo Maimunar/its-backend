@@ -60,7 +60,7 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true }, (e
 
 app.use(express.static(path.join(__dirname, '../public')))
 app.use(bodyParser.json())
-
+app.use(bodyParser.urlencoded({ extended: true }));
 //Send to router
 app.use('/api', routes({ itemsController, itemPictures }))
 

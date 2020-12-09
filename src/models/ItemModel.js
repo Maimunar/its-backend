@@ -22,7 +22,10 @@ const ItemSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  sizes: [String],
+  sizes: {
+    type: Object,
+    default: {}
+  },
   type: {
     type: String,
     required: true,

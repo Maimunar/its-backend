@@ -23,19 +23,21 @@ class ItemsController {
         bandName: req.body.bandName,
         description: req.body.description,
         price: req.body.price,
-        sizes: req.body.sizes,
+        sizes: req.body.sizes.split(','),
         type: req.body.type,
         linkToReseller: req.body.linkToReseller,
       });
       if (req.file && req.file.storedFilename) {
         item.itemPicture = req.file.storedFilename;
       }
+
       const savedItem = await item.save();
 
-      if (savedItem) return res.redirect('/api');
+      if (savedItem) return res.send(savedItem);
       return next(new Error('Failed to save item'));
 
     } catch (error) {
+      console.log(error)
       if (req.file && req.file.storedFilename) {
         await itemPictures.delete(req.file.storedFilename);
       }
@@ -46,9 +48,9 @@ class ItemsController {
   async deleteItem(req, res, next) {
     try {
       const item = await ItemModel.findOne({ itemName: req.body.itemName })
-      itemPictures.delete(item.itemPicture)
+      if (item.itemPicture) itemPictures.delete(item.itemPicture)
       await ItemModel.deleteOne({ itemName: req.body.itemName })
-      return res.redirect('/api')
+      return res.send('Succesfully deleted')
     } catch (err) {
       return next(err)
     }
@@ -58,18 +60,18 @@ class ItemsController {
     try {
       const item = await ItemModel.findOne({ itemName: req.body.itemName })
       if (req.file && req.file.storedFilename) {
-        itemPictures.delete(item.itemPicture);
+        if (item.itemPicture) itemPictures.delete(item.itemPicture);
         item.itemPicture = req.file.storedFilename;
       }
       item.itemName = req.body.itemName
       item.bandName = req.body.bandName
       item.description = req.body.description
       item.price = req.body.price
-      item.sizes = req.body.sizes
+      item.sizes = req.body.sizes.split(',')
       item.type = req.body.type
       item.linkToReseller = req.body.linkToReseller
       item.save()
-      return res.redirect('/api')
+      return res.send(item)
     } catch (error) {
       if (req.file && req.file.storedFilename) {
         await itemPictures.delete(req.file.storedFilename)
@@ -126,7 +128,10 @@ class ItemsController {
     const band = req.params.band
     try {
       const items = await ItemModel.find({ bandName: band })
-      res.send(`The band ${band} has ${items.length} Items on this website`)
+      if (items.length === 0 || items.length === 1)
+        res.send(`The band ${band} has ${items.length} item on this website`)
+      else
+        res.send(`The band ${band} has ${items.length} items on this website`)
     } catch (err) {
       return next(err)
     }

@@ -1,7 +1,5 @@
 import express from 'express'
 import middlewares from '../middleware'
-import multer from 'multer'
-const upload = multer()
 const router = express.Router()
 
 module.exports = (params) => {
@@ -13,19 +11,23 @@ module.exports = (params) => {
       Delete deletes the photo and the item from the database
       Put uploads a new photo (if any) and updates the item's information
       Delete uses upload.none from multer as a parser of the form data
+      Delete is on a different route and on a post request because
+      A few browsers have issues with the headers regarding delete requests
   */
   router.route('/modifyItem')
     .post(
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
       itemsController.addItem)
-    .delete(
-      upload.none(),
-      itemsController.deleteItem)
     .put(
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
       itemsController.modifyItem)
+
+  router.route('/deleteItem')
+    .post(
+      middlewares.upload.none(),
+      itemsController.deleteItem)
 
   /*
       Get request for a list of items
@@ -49,6 +51,12 @@ module.exports = (params) => {
       "The band Emmure has 4 Items on this website"
   */
   router.get('/perBand/:band', itemsController.getNumberOfItemsForABand)
+
+  /*
+      Serves the pictures to the client
+      Ex: /api/items/itemPicture/0d40fce6-74b4-4ae1-9d4b-1ffe42952ec4.jpg
+  */
+  router.get('/itemPicture/:filename', itemsController.viewItemPicture)
 
   return router;
 };
