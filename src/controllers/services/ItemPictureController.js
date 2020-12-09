@@ -40,6 +40,9 @@ class ItemPictureController {
   filepath(filename) {
     return path.resolve(`${this.directory}/${filename}`);
   }
+  defaultFilepath() {
+    return path.join(__dirname, '../../../public/defaultPictures/noImageAvailable.jpg')
+  }
 }
 
 module.exports = ItemPictureController;

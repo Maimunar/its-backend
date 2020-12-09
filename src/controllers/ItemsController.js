@@ -1,4 +1,3 @@
-import { type } from 'os'
 import path from 'path'
 import ItemModel from '../models/ItemModel'
 import ItemPictureController from './services/ItemPictureController'
@@ -83,7 +82,9 @@ class ItemsController {
 
   async viewItemPicture(req, res) {
     res.type('jpg')
-    return res.sendFile(itemPictures.filepath(req.params.filename))
+    if (req.params.filename !== 'undefined')
+      return res.sendFile(itemPictures.filepath(req.params.filename))
+    else return res.sendFile(itemPictures.defaultFilepath())
   }
 
   async viewItem(req, res, next) {
@@ -101,10 +102,9 @@ class ItemsController {
     const price = req.query.price
 
     function hasARightSize(item) {
-      let itemSizes = item.sizes[0].split(',')
       let sizeBool = false
       sizes.forEach(size => {
-        if (itemSizes.includes(size)) {
+        if (item.sizes.includes(size)) {
           sizeBool = true
         }
       })

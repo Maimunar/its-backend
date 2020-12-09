@@ -11,7 +11,6 @@ module.exports.upload = upload;
 module.exports.handlePicture = itemPictures => async (req, res, next) => {
   try {
     if (!req.file) return next();
-    console.log('Request has a file')
     if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
       return next(new Error('File format is not supported'));
     }
