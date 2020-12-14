@@ -28,10 +28,6 @@ Before starting this project, you need to make sure you have run 'npm install' i
 
 The server runs on port 3000.
 
-There are three routes:
-
-- http://localhost:3000/ - homepage
-
 The server persists using a a mongoDB Database and the mongoose + mongodb packages
 
 *********************************************************************************************************************
