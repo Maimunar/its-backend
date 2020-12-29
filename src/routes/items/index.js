@@ -1,5 +1,6 @@
 import express from 'express'
 import middlewares from '../middleware'
+import { loggedIn, adminOnly } from '../auth.middleware'
 const router = express.Router()
 
 module.exports = (params) => {
@@ -18,14 +19,20 @@ module.exports = (params) => {
     .post(
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
+      loggedIn,
+      adminOnly,
       itemsController.addItem)
     .put(
+      loggedIn,
+      adminOnly,
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
       itemsController.modifyItem)
 
   router.route('/deleteItem')
     .post(
+      loggedIn,
+      adminOnly,
       middlewares.upload.none(),
       itemsController.deleteItem)
 
@@ -50,7 +57,8 @@ module.exports = (params) => {
       In a string format such as:
       "The band Emmure has 4 Items on this website"
   */
-  router.get('/perBand/:band', itemsController.getNumberOfItemsForABand)
+  router.get('/perBand/:band', loggedIn,
+    adminOnly, itemsController.getNumberOfItemsForABand)
 
   /*
       Serves the pictures to the client

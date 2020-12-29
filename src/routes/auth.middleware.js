@@ -21,6 +21,7 @@ exports.loggedIn = function (req, res, next) {
 }
 
 exports.adminOnly = async function (req, res, next) {
+  console.log(req.user.user_type_id)
   if (req.user.user_type_id === 'user') {
     return res.status(401).send("Access Denied");
   }

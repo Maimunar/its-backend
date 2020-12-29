@@ -17,12 +17,20 @@ const app = express()
 const itemPictures = new ItemPictureController(path.join(__dirname, '../public/itemPictures'),)
 const itemsController = new ItemsController();
 
+//Sockets setup and saved to local
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+app.locals.io = io
+
 //Database Connection
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) console.log(err)
   console.log(`Succesfully connected mongodb on URL ${DB_URL}`)
 })
 
+io.on('connection', (socket) => console.log('user connected, total:', socket.client.conn.server.clientsCount))
+io.on('send-message', message => { console.log('kur')
+ io.emit('message', message)})
 //Middleware
 
 
@@ -64,5 +72,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Send to router
 app.use('/api', routes({ itemsController, itemPictures }))
 
-app.listen(PORT,
+server.listen(PORT,
   () => console.log(`Listening on port ${PORT}`))
