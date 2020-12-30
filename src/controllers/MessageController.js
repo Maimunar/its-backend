@@ -16,7 +16,6 @@ exports.postMessage = async (req, res, next) => {
     var savedMessage = await message.save()
     const io = req.app.locals.io
     if (savedMessage) {
-      console.log(req.body)
       io.emit('message', req.body)
       res.send(savedMessage)
     }
