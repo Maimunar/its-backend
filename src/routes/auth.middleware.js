@@ -1,7 +1,15 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 
+/*
+  Middleware used for authorization
+  Uses jsonwebtoken as a JWT signing library
+*/
 
+/*
+  Checks if a user is logged in by his Autherization token
+  Saves the user to the request locals if the user is verified
+*/
 exports.loggedIn = function (req, res, next) {
   let token = req.header('Authorization');
   if (!token) return res.status(401).send("Access Denied");
@@ -20,8 +28,10 @@ exports.loggedIn = function (req, res, next) {
   }
 }
 
+/*
+  Checks if an user is an admin
+*/
 exports.adminOnly = async function (req, res, next) {
-  console.log(req.user.user_type_id)
   if (req.user.user_type_id === 'user') {
     return res.status(401).send("Access Denied");
   }

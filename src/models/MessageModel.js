@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 
+/*
+  Schema for the chat messages
+  Both fields are required
+*/
 const MessageSchema = mongoose.Schema({
   username: {
     type: String,

@@ -4,72 +4,51 @@ import path from 'path'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import routes from './routes'
-import session from 'express-session'
-import auth from './util/auth'
 import ItemsController from './controllers/ItemsController'
 import ItemPictureController from './controllers/services/ItemPictureController'
-import cors from 'cors'
 
-// const MongoStore = require('connect-mongo')(session);
-const PORT = process.env.PORT
-const DB_URL = process.env.DB_URL
+/*
+  Main server file using express
+  Uses mongoose for the database and body-parser for request formatting
+  PORT and DB_URL are saved in the .env file
+  .env is in the .gitignore, if there is an error, please check the readme file
+*/
+const PORT = process.env.PORT || 8000
+const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/its3-project'
 const app = express()
 const itemPictures = new ItemPictureController(path.join(__dirname, '../public/itemPictures'),)
 const itemsController = new ItemsController();
 
-//Sockets setup and saved to local
+/*
+  Sockets logic
+  They are created here and then saved to the locals directory
+  As they are used throughout the file
+*/
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 app.locals.io = io
 
-//Database Connection
+/*
+  Database Connection
+  Mongoose is used to connect to mongodb
+*/
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) console.log(err)
   console.log(`Succesfully connected mongodb on URL ${DB_URL}`)
 })
 
 io.on('connection', (socket) => console.log('user connected, total:', socket.client.conn.server.clientsCount))
-io.on('send-message', message => { console.log('kur')
- io.emit('message', message)})
-//Middleware
 
-
-//Cors is the library that deals with cross-site forgery
-
-// const corsOptions = {
-//   origin: 'http://localhost:3000',
-// }
-
-// app.use(cors(corsOptions))
-
-//This sets up the session with a store that we use globally
-// app.use(session({
-//   secret: process.env.SESSION_SECRET,
-//   name: 'sessionId',
-//   proxy: true,
-//   cookie: { secure: true },
-//   resave: true,
-//   saveUninitialized: false,
-//   store: new MongoStore({ mongooseConnection: mongoose.connection })
-// }));
-
-//Proxy for CORS
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   next();
-// });
-
-//Authorisation setup - passport
-// app.use(auth.initialize);
-// app.use(auth.session);
-// app.use(auth.setUser);
-
-
-
+/*
+  Middleware - handling of static pictures and bodyParser
+*/
 app.use(express.static(path.join(__dirname, '../public')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
-//Send to router
+
+/*
+  Send the request to the router
+*/
 app.use('/api', routes({ itemsController, itemPictures }))
 
 server.listen(PORT,

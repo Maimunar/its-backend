@@ -1,6 +1,6 @@
-import path from 'path'
-import ItemModel from '../models/ItemModel'
-import ItemPictureController from './services/ItemPictureController'
+const path = require('path')
+const ItemModel = require('../models/ItemModel')
+const ItemPictureController = require('./services/ItemPictureController') 
 
 const itemPictures = new ItemPictureController(path.join(__dirname, '../../public/itemPictures'),)
 
@@ -9,14 +9,26 @@ async function itemExists(name) {
   if (item) return true
   return false
 }
-
+/*
+  A class that handles the items route
+  It makes use of no external libraries other than the ones needed
+  In the service responsible for pictures (ItemPictureController)
+*/
 class ItemsController {
-
+  
+  /*
+    Adds an item to the database:
+    1. Checks if an item with the same name already exists
+    2. Creates and saves the model with the already saved picture's name
+    If an error is found, deletes the picture to reduce clutter
+  */
   async addItem(req, res, next) {
     try {
+
       if (await itemExists(req.body.itemName)) {
         throw new Error('Item with that name exists already')
       }
+      
       const item = new ItemModel({
         itemName: req.body.itemName,
         bandName: req.body.bandName,
@@ -31,19 +43,21 @@ class ItemsController {
       }
 
       const savedItem = await item.save();
-
       if (savedItem) return res.send(savedItem);
-      return next(new Error('Failed to save item'));
+      res.status(500).send("Failed to save item")
 
     } catch (error) {
-      console.log(error)
       if (req.file && req.file.storedFilename) {
         await itemPictures.delete(req.file.storedFilename);
-      }
-      return next(error);
+      }  
+      res.status(500).send(error);
     }
   }
 
+  /*
+    Handles the deletion of an item from the database and it's
+    picture from the server picture folder
+  */
   async deleteItem(req, res, next) {
     try {
       const item = await ItemModel.findOne({ itemName: req.body.itemName })
@@ -51,10 +65,17 @@ class ItemsController {
       await ItemModel.deleteOne({ itemName: req.body.itemName })
       return res.send('Succesfully deleted')
     } catch (err) {
-      return next(err)
+      res.status(500).send(err)
     }
   }
-
+  
+  /*
+    Modifies an item in the database:
+    1. Checks if an item with the same name exists
+    2. If another picture is added, deletes the old one
+    3. Modifies the data and saves the model with the saved picture's name
+    If an error is found, deletes the picture to reduce clutter
+  */
   async modifyItem(req, res, next) {
     try {
       const item = await ItemModel.findOne({ itemName: req.body.itemName })
@@ -75,11 +96,14 @@ class ItemsController {
       if (req.file && req.file.storedFilename) {
         await itemPictures.delete(req.file.storedFilename)
       }
-      return next(error)
+      res.status(500).send(error)
     }
 
   }
-
+  
+  /*
+    Return a required picture by its filename
+  */
   async viewItemPicture(req, res) {
     res.type('jpg')
     if (req.params.filename !== 'undefined')
@@ -87,15 +111,25 @@ class ItemsController {
     else return res.sendFile(itemPictures.defaultFilepath())
   }
 
+  /*
+    Returns a single item as JSON
+  */
   async viewItem(req, res, next) {
     try {
       const item = await ItemModel.findOne({ itemName: req.params.itemName })
       return res.json(item)
     } catch (error) {
-      return next(error)
+      res.status(500).send(error)
     }
   }
 
+  /*
+    Returns a list of all items filtered (if needed) by:
+    * Band name
+    * Size(s)
+    * Price threshold (Shows only items above the threshold)
+    These can be combined
+  */
   async viewItems(req, res, next) {
     const band = req.query.band
     const sizes = req.query.sizes == undefined ? undefined : JSON.parse(req.query.sizes)
@@ -120,10 +154,13 @@ class ItemsController {
 
       res.send(items)
     } catch (error) {
-      return next(error)
+      res.status(500).send(error)
     }
   }
 
+  /*
+    Returns the number of items available for a specific band
+  */
   async getNumberOfItemsForABand(req, res, next) {
     const band = req.params.band
     try {
@@ -133,7 +170,7 @@ class ItemsController {
       else
         res.send(`The band ${band} has ${items.length} items on this website`)
     } catch (err) {
-      return next(err)
+      res.status(500).send(err)
     }
   }
 

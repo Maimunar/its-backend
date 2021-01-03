@@ -1,5 +1,8 @@
 const MessageModel = require("../models/MessageModel");
 
+/*
+  Sends all messages or a status 500 if there was an error
+*/
 exports.getMessages = (req, res, next) => {
   MessageModel.find({}, (err, messages) => {
     if (err) {
@@ -10,6 +13,10 @@ exports.getMessages = (req, res, next) => {
   })
 }
 
+/*
+  Saves a message to the database
+  Also emits that message to all frontend sockets
+*/
 exports.postMessage = async (req, res, next) => {
   try {
     var message = new MessageModel(req.body)
@@ -19,11 +26,8 @@ exports.postMessage = async (req, res, next) => {
       io.emit('message', req.body)
       res.send(savedMessage)
     }
-    else
-      res.send('Message couldnt be saved')
   } catch (err) {
 
-    console.log(err)
     res.sendStatus(500).send('Message Post unsuccesful')
   }
 }

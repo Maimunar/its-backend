@@ -1,15 +1,27 @@
 import WishlistModel from '../models/WishlistModel'
 
+/*
+  File handles the wishlist functionality
+*/
 
+/*
+  Auxilary method
+  Checks if an item exists in the wishlist
+*/
 const itemExists = (itemName, wishlist) => {
   const items = wishlist.wishlistItems.filter(item => {
     return item.itemName === itemName
   })
-  console.log(items)
   if (items.length > 0) return true
   else return false
 }
 
+/*
+  Adds an item to the wishlist:
+  1.If there isn't a wishlist for that user, creates one
+  2.If item already exists, sends status 500
+  3.Modifies and saves the model
+*/
 exports.addToWishlist = async (req, res, next) => {
 
   try {
@@ -37,11 +49,16 @@ exports.addToWishlist = async (req, res, next) => {
 
   } catch (error) {
     console.log(error)
-    return next(error)
+    res(500).send(error)
   }
 
 }
 
+/*
+  Removes an item from the wishlist:
+  1.Looks for the wishlist
+  2.Filters the item from the wishlist and saves it 
+*/
 exports.removeFromWishlist = async (req, res, next) => {
 
   try {
@@ -57,10 +74,13 @@ exports.removeFromWishlist = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error)
-    return next(error)
+    res(500).send(error)
   }
 }
 
+/*
+  Deletes the whole wishlist model of a user
+*/
 exports.clearWishlist = async (req, res, next) => {
   try {
     await WishlistModel.deleteOne({ ownerUsername: req.params.username }).exec()
@@ -68,10 +88,13 @@ exports.clearWishlist = async (req, res, next) => {
   }
   catch (error) {
     console.log(error)
-    return res(500).send(error)
+    res(500).send(error)
   }
 }
 
+/*
+  Sends the wishlist of a specific user
+*/
 exports.getWishlist = async (req, res, next) => {
   try {
     let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
@@ -82,7 +105,7 @@ exports.getWishlist = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error)
-    return res.status(500).send("An Error Occured while finding the wishlist")
+    res.status(500).send("An Error Occured while finding the wishlist")
   }
 }
 

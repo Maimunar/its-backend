@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
-
-
-//Require routes
 const usersRoute = require('./users')
-const itemsRoute = require('./items')
+const itemsRoute = require('./items/index.js')
 const wishlistRoute = require('./wishlist')
 const messagesRoute = require('./messages')
+
+/*
+  Main router that divides the routes to their specific routers with own controllers
+*/
 module.exports = (params) => {
 
   router.use('/users', usersRoute(params))

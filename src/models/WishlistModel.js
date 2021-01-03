@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 
+/*
+  Schema for the wishlist
+  Every wishlist has an ownerUsername and a list of items
+*/
 const WishlistSchema = mongoose.Schema({
   ownerUsername: {
     type: String,

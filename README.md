@@ -26,11 +26,13 @@ The following commands are available in the package.json:
 
 Before starting this project, you need to make sure you have run 'npm install' in the console.
 
+If you received this from Git, you might need to create a .env file in order to run it properly
+Please include it in the src directory with the following lines:
+PORT=<The port you want to run the server on>
+DB_URL=<Your mongodb URL>
+TOKEN_SECRET=<Your JWT secret>
+
 The server runs on port 3000.
-
-There are three routes:
-
-- http://localhost:3000/ - homepage
 
 The server persists using a a mongoDB Database and the mongoose + mongodb packages
 

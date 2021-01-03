@@ -1,13 +1,14 @@
 import express from 'express'
 import middlewares from '../middleware'
 import { loggedIn, adminOnly } from '../auth.middleware'
+
 const router = express.Router()
 
 module.exports = (params) => {
   const { itemPictures, itemsController } = params
 
   /*
-      This route deals with modifying an item
+      These routes deal with modifying an item
       Post uploads a new photo and then adds an item to the database
       Delete deletes the photo and the item from the database
       Put uploads a new photo (if any) and updates the item's information
