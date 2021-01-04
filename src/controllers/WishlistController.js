@@ -22,7 +22,7 @@ const itemExists = (itemName, wishlist) => {
   2.If item already exists, sends status 500
   3.Modifies and saves the model
 */
-exports.addToWishlist = async (req, res, next) => {
+exports.addToWishlist = async (req, res) => {
 
   try {
     let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
@@ -59,7 +59,7 @@ exports.addToWishlist = async (req, res, next) => {
   1.Looks for the wishlist
   2.Filters the item from the wishlist and saves it 
 */
-exports.removeFromWishlist = async (req, res, next) => {
+exports.removeFromWishlist = async (req, res) => {
 
   try {
     let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
@@ -81,7 +81,7 @@ exports.removeFromWishlist = async (req, res, next) => {
 /*
   Deletes the whole wishlist model of a user
 */
-exports.clearWishlist = async (req, res, next) => {
+exports.clearWishlist = async (req, res) => {
   try {
     await WishlistModel.deleteOne({ ownerUsername: req.params.username }).exec()
     return res.send("Succesfully cleared wishlist!")
@@ -95,7 +95,7 @@ exports.clearWishlist = async (req, res, next) => {
 /*
   Sends the wishlist of a specific user
 */
-exports.getWishlist = async (req, res, next) => {
+exports.getWishlist = async (req, res) => {
   try {
     let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
     if (wishlist) {
