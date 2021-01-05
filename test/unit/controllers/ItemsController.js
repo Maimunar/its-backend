@@ -3,7 +3,6 @@ const should = chai.should()
 const sinon = require('sinon')
 const ItemController  = require('../../../src/controllers/ItemsController.js')
 const itemController = new ItemController()
-const proxyquire = require('proxyquire');
 const ItemModel = require('../../../src/models/ItemModel')
 const { stub } = require('sinon')
 const  expect  = chai.expect;

@@ -1,4 +1,4 @@
-import chai, {expect} from 'chai'
+import chai from 'chai'
 import MessageModel from '../../../src/models/MessageModel'
 import {postMessage} from '../../../src/controllers/MessageController'
 const should = chai.should()
