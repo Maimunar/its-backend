@@ -27,7 +27,7 @@ describe('Authentication Middleware Controller', () => {
                 }
             }
             loggedIn(req,res, next)
-            expect(next.callCount).to.equal(1)
+
             expect(spy.callCount).to.equal(0)
         })
 
