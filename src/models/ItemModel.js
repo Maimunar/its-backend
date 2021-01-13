@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
 
+/*
+  Schema that handles the produc items
+  Everything except the itemPicture is required
+  itemName must be unique (logic for that is in the controller)
+*/
 const ItemSchema = mongoose.Schema({
   itemName: {
     type: String,

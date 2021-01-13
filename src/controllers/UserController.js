@@ -3,6 +3,19 @@ import jwt from 'jsonwebtoken'
 import UserModel from '../models/UserModel'
 require('dotenv').config()
 
+/*
+  This file handles the user authentication
+  It uses jwt to handle json web tokens easily
+  Bcrypt is used to hash passwords
+*/
+
+/*
+  Saves a user to the database:
+  1.Hashes his password
+  2.Creates and saves his model
+  3.Deletes the hashed password from the model
+  4.Sends the user model
+*/
 exports.register = async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
@@ -23,11 +36,19 @@ exports.register = async (req, res) => {
   }
 };
 
+/*
+  Allows a user to authenticate
+  Compares the passwords with bcrypt and
+  Sends an JWT signed header + usertype(user,admin) if succesfull
+  Sends a status 400 if user/pass is wrong
+  Sends a status 500 if there was another error
+*/
 exports.login = async (req, res) => {
 
   try {
     const user = await UserModel.findOne({ username: req.body.username })
     if (user) {
+
       const validPass = await bcrypt.compare(req.body.password, user.password)
       if (!validPass) return res.status(400).send("Username or Password is wrong")
       const token = jwt.sign({ id: user._id, user_type_id: user.type }, process.env.TOKEN_SECRET)
@@ -39,11 +60,4 @@ exports.login = async (req, res) => {
   }
 }
 
-exports.authuseronly = (req, res) => {
-  res.send("Hey,You are authenticated user. So you are authorized to access here.");
-};
-
-exports.adminonly = (req, res) => {
-  res.send("Success. Hello Admin, this route is only for you");
-};
 

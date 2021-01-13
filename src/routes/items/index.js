@@ -1,12 +1,14 @@
 import express from 'express'
 import middlewares from '../middleware'
+import { loggedIn, adminOnly } from '../auth.middleware'
+
 const router = express.Router()
 
 module.exports = (params) => {
   const { itemPictures, itemsController } = params
 
   /*
-      This route deals with modifying an item
+      These routes deal with modifying an item
       Post uploads a new photo and then adds an item to the database
       Delete deletes the photo and the item from the database
       Put uploads a new photo (if any) and updates the item's information
@@ -18,14 +20,20 @@ module.exports = (params) => {
     .post(
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
+      loggedIn,
+      adminOnly,
       itemsController.addItem)
     .put(
+      loggedIn,
+      adminOnly,
       middlewares.upload.single('itemPicture'),
       middlewares.handlePicture(itemPictures),
       itemsController.modifyItem)
 
   router.route('/deleteItem')
     .post(
+      loggedIn,
+      adminOnly,
       middlewares.upload.none(),
       itemsController.deleteItem)
 
@@ -50,7 +58,8 @@ module.exports = (params) => {
       In a string format such as:
       "The band Emmure has 4 Items on this website"
   */
-  router.get('/perBand/:band', itemsController.getNumberOfItemsForABand)
+  router.get('/perBand/:band', loggedIn,
+    adminOnly, itemsController.getNumberOfItemsForABand)
 
   /*
       Serves the pictures to the client

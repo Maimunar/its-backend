@@ -2,9 +2,16 @@ image: node:latest
 
 stages:
 - test
+- coverage
 
 all_tests:
   stage: test
   script:
   - npm install
   - npm run test
+
+run_coverage:
+  stage: coverage
+  script:
+  - npm install
+  - npm run coverage

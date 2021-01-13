@@ -1,5 +1,10 @@
 const multer = require('multer');
 
+/*
+  Middleware that handles pictures and uploads
+  Uses multer's upload and gives it a file limit for security reasons
+  handle picture stores the filename in the request locals if the format is right
+*/
 const upload = multer({
   limits: {
     fileSize: 50 * 1024 * 1024,

@@ -1,19 +1,30 @@
 import WishlistModel from '../models/WishlistModel'
 
+/*
+  File handles the wishlist functionality
+*/
 
+/*
+  Auxilary method
+  Checks if an item exists in the wishlist
+*/
 const itemExists = (itemName, wishlist) => {
   const items = wishlist.wishlistItems.filter(item => {
     return item.itemName === itemName
   })
-  console.log(items)
   if (items.length > 0) return true
   else return false
 }
 
-exports.addToWishlist = async (req, res, next) => {
-
+/*
+  Adds an item to the wishlist:
+  1.If there isn't a wishlist for that user, creates one
+  2.If item already exists, sends status 500
+  3.Modifies and saves the model
+*/
+exports.addToWishlist = async (req, res) => {
   try {
-    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
+    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username })
     if (wishlist) {
       if (itemExists(req.body.itemName, wishlist)) {
         console.log("Item already in wishlist")
@@ -31,50 +42,58 @@ exports.addToWishlist = async (req, res, next) => {
       itemPicture: req.body.itemPicture
     }
     wishlist.wishlistItems.push(newItem)
+
     const savedWishlist = await wishlist.save();
     if (savedWishlist) return res.send("Succesfully saved!")
     return res.status(500).send("Failed to Save Item")
 
   } catch (error) {
-    console.log(error)
-    return next(error)
+    res.status(500).send(error)
   }
-
 }
 
-exports.removeFromWishlist = async (req, res, next) => {
-
+/*
+  Removes an item from the wishlist:
+  1.Looks for the wishlist
+  2.Filters the item from the wishlist and saves it 
+*/
+exports.removeFromWishlist = async (req, res) => {
   try {
-    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
+    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username })
     if (wishlist) {
       wishlist.wishlistItems = wishlist.wishlistItems.filter(item =>
         item.itemName !== req.body.itemName)
       const savedWishlist = await wishlist.save();
+      console.log(savedWishlist)
       if (savedWishlist) return res.send(savedWishlist)
       return res.status(500).send("Failed to Save Item")
     } else {
       res.status(500).send("Wishlist not found")
     }
   } catch (error) {
-    console.log(error)
-    return next(error)
+    res.status(500).send(error)
   }
 }
 
-exports.clearWishlist = async (req, res, next) => {
+/*
+  Deletes the whole wishlist model of a user
+*/
+exports.clearWishlist = async (req, res) => {
   try {
-    await WishlistModel.deleteOne({ ownerUsername: req.params.username }).exec()
+    await WishlistModel.deleteOne({ ownerUsername: req.params.username })
     return res.send("Succesfully cleared wishlist!")
   }
   catch (error) {
-    console.log(error)
-    return res(500).send(error)
+    res.status(500).send(error)
   }
 }
 
-exports.getWishlist = async (req, res, next) => {
+/*
+  Sends the wishlist of a specific user
+*/
+exports.getWishlist = async (req, res) => {
   try {
-    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username }).exec()
+    let wishlist = await WishlistModel.findOne({ ownerUsername: req.params.username })
     if (wishlist) {
       return res.send(wishlist)
     } else {
@@ -82,7 +101,7 @@ exports.getWishlist = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error)
-    return res.status(500).send("An Error Occured while finding the wishlist")
+    res.status(500).send("An Error Occured while finding the wishlist")
   }
 }
 
