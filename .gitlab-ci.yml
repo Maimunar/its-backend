@@ -13,4 +13,5 @@ all_tests:
 run_coverage:
   stage: coverage
   script:
+  - npm install
   - npm run coverage
