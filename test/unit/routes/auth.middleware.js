@@ -7,30 +7,6 @@ describe('Authentication Middleware Controller', () => {
     
     context('Logged In', () => {
 
-        const WORKING_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmZDUwOTNmZGY1OTM1MDdhMGNmZjY5MyIsInVzZXJfdHlwZV9pZCI6ImFkbWluIiwiaWF0IjoxNjA5ODQ4OTYwfQ.t_SinzatYPRknkMg2OuTNDScS8ODcO0Jh_zHPjkpinM"
-
-        it('should succesfully verify a users token',() => {
-            let req,res, next;
-            req = res = {};
-            next = sinon.spy()
-            req = {
-                header: function(type) {
-                    return WORKING_TOKEN
-                }
-            }
-            spy = sinon.spy()
-            res = {
-                send: spy,
-                status: function(responseStatus) {
-                    responseStatus.should.equal(400)
-                    return this; 
-                }
-            }
-            loggedIn(req,res, next)
-
-            expect(spy.callCount).to.equal(0)
-        })
-
         it('should send a status 401 message when no token is found',() => {
             let req,res, next;
             req = res = {};
