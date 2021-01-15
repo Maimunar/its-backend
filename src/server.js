@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import routes from './routes'
 import ItemsController from './controllers/ItemsController'
 import ItemPictureController from './controllers/services/ItemPictureController'
+import { model } from './models/ItemModel'
 
 /*
   Main server file using express
@@ -53,3 +54,5 @@ app.use('/api', routes({ itemsController, itemPictures }))
 
 server.listen(PORT,
   () => console.log(`Listening on port ${PORT}`))
+
+module.exports = app;
