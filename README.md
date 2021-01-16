@@ -67,3 +67,14 @@ npm start
 
 
 *********************************************************************************************************************
+
+### Docker
+
+This project allows building of a docker image for it. The image will build a mongodb image as well as the API.
+
+To build the image run:
+docker-composer build
+(You only need to do this once)
+
+To activate the image run:
+docker-composer up
