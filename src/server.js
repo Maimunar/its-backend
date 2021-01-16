@@ -15,7 +15,7 @@ import { model } from './models/ItemModel'
   .env is in the .gitignore, if there is an error, please check the readme file
 */
 const PORT = process.env.PORT || 8000
-const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/its3-project'
+const DB_URL = process.env.DB_URL || 'mongodb://mongo:27017/its3-project'
 const app = express()
 const itemPictures = new ItemPictureController(path.join(__dirname, '../public/itemPictures'),)
 const itemsController = new ItemsController();
@@ -35,7 +35,7 @@ app.locals.io = io
 */
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) console.log(err)
-  console.log(`Succesfully connected mongodb on URL ${DB_URL}`)
+  else console.log(`Succesfully connected mongodb on URL ${DB_URL}`)
 })
 
 io.on('connection', (socket) => console.log('user connected, total:', socket.client.conn.server.clientsCount))
