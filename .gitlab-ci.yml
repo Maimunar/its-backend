@@ -3,6 +3,10 @@ image: node:latest
 stages:
 - test
 - coverage
+- deploy
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
 
 all_tests:
   stage: test
@@ -15,3 +19,15 @@ run_coverage:
   script:
   - npm install
   - npm run coverage
+
+docker-deploy:
+  stage: deploy
+  image: docker:stable
+  services: 
+    - docker:dind
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin  $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  when: manual
